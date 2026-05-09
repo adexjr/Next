@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE                 
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -285,6 +286,12 @@
             transform: translateY(-4px);
         }
 
+        .moment-box-song.playing {
+            background: rgba(77, 150, 255, 0.15);
+            border-color: rgba(77, 150, 255, 0.5);
+            box-shadow: 0 0 25px rgba(77, 150, 255, 0.2);
+        }
+
         .song-art {
             font-size: 40px;
             margin-bottom: 8px;
@@ -320,6 +327,16 @@
         .moment-box-song:hover .play-button {
             transform: scale(1.1);
             box-shadow: 0 6px 20px rgba(77, 150, 255, 0.4);
+        }
+
+        .moment-box-song.playing .play-button {
+            background: linear-gradient(135deg, #ff6b9d, #c44dff);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 157, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(255, 107, 157, 0.6); }
         }
 
         /* Timeline */
@@ -474,11 +491,6 @@
             animation: pulse 2s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3); }
-            50% { box-shadow: 0 10px 50px rgba(255, 107, 157, 0.6); }
-        }
-
         .response-area {
             margin-top: 30px;
             font-size: 18px;
@@ -622,12 +634,13 @@
                         <p class="moment-title">The rainy day</p>
                         <p class="moment-desc">You laughed at me for not having an umbrella, then shared yours</p>
                     </div>
-                    <div class="moment-box moment-box-song" onclick="window.open('https://open.spotify.com/track/3L1lqZ0wb6ltjm2eGIuv5O', '_blank')">
+                    <div class="moment-box moment-box-song" id="songBox">
                         <span class="song-art">🌊</span>
                         <p class="song-name">Ocean Eyes</p>
                         <p class="song-artist">Billie Eilish</p>
                         <p class="moment-desc">"No fair... you really know how to make me cry when you give me those ocean eyes"</p>
-                        <span class="play-button">▶</span>
+                        <span class="play-button" id="playBtn">▶</span>
+                        <audio id="oceanAudio" src="https://cdn.jsdelivr.net/gh/snix-js/music-files@main/Billie%20Eilish%20-%20Ocean%20Eyes.mp3" preload="auto"></audio>
                     </div>
                     <div class="moment-box moment-box-image">
                         <p class="moment-title">💬 Our late night chats</p>
@@ -777,6 +790,33 @@
             document.getElementById('section-intro').classList.add('visible');
         }, 200);
 
+        // Ocean Eyes audio player
+        const songBox = document.getElementById('songBox');
+        const playBtn = document.getElementById('playBtn');
+        const oceanAudio = document.getElementById('oceanAudio');
+        let isPlaying = false;
+
+        songBox.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (isPlaying) {
+                oceanAudio.pause();
+                playBtn.textContent = '▶';
+                songBox.classList.remove('playing');
+                isPlaying = false;
+            } else {
+                oceanAudio.play().catch(() => {});
+                playBtn.textContent = '⏸';
+                songBox.classList.add('playing');
+                isPlaying = true;
+            }
+        });
+
+        oceanAudio.addEventListener('ended', function() {
+            playBtn.textContent = '▶';
+            songBox.classList.remove('playing');
+            isPlaying = false;
+        });
+
         // Floating hearts
         function createHeart() {
             const container = document.getElementById('heartsContainer');
@@ -902,4 +942,4 @@
         }
     </script>
 </body>
-  </html>
+</html>
